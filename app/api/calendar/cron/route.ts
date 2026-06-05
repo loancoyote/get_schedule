@@ -8,9 +8,10 @@ import { refreshGoogleAccessToken } from '../../../lib/google-auth';
 
 export async function GET(request: NextRequest) {
   // const authHeader = request.headers.get('authorization');
-  // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return Response.json({ message: 'Unauthorized' }, { status: 401 });
-  // }
+  const cronHeader = request.headers.get('x-vercel-cron');
+  if (cronHeader !== '1') {
+    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+  }
   console.log('GOOGLE_CLIENT_ID exists:', !!process.env.GOOGLE_CLIENT_ID);
 
   console.log(
