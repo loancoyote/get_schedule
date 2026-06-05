@@ -12,12 +12,9 @@ export async function GET(request: NextRequest) {
   if (cronHeader !== '1') {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
-  console.log('GOOGLE_CLIENT_ID exists:', !!process.env.GOOGLE_CLIENT_ID);
+  console.log('AUTH_GOOGLE_ID exists:', !!process.env.AUTH_GOOGLE_ID);
 
-  console.log(
-    'GOOGLE_CLIENT_SECRET exists:',
-    !!process.env.GOOGLE_CLIENT_SECRET,
-  );
+  console.log('AUTH_GOOGLE_SECRET exists:', !!process.env.AUTH_GOOGLE_SECRET);
 
   console.log(
     'GOOGLE_REFRESH_TOKEN exists:',
