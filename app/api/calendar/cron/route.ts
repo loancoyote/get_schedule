@@ -8,6 +8,15 @@ import { refreshGoogleAccessToken } from '../../../lib/google-auth';
 
 export async function GET(request: NextRequest) {
   // const authHeader = request.headers.get('authorization');
+  console.log('===== CRON START =====');
+  console.log('x-vercel-cron:', request.headers.get('x-vercel-cron'));
+  console.log('authorization:', request.headers.get('authorization'));
+  console.log('user-agent:', request.headers.get('user-agent'));
+  console.log(
+    'GOOGLE_REFRESH_TOKEN exists:',
+    !!process.env.GOOGLE_REFRESH_TOKEN,
+  );
+
   const cronHeader = request.headers.get('x-vercel-cron');
   if (cronHeader !== '1') {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
