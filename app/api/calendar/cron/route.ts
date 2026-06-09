@@ -7,23 +7,12 @@ import {
 import { refreshGoogleAccessToken } from '../../../lib/google-auth';
 
 export async function GET(request: NextRequest) {
-  // const authHeader = request.headers.get('authorization');
   console.log('===== CRON START =====');
-  // console.log('x-vercel-cron:', request.headers.get('x-vercel-cron'));
-  // console.log('authorization:', request.headers.get('authorization'));
-  // console.log('user-agent:', request.headers.get('user-agent'));
-  const { searchParams } = new URL(request.url);
-
-  const secret = searchParams.get('secret');
-
-  // const cronHeader = request.headers.get('x-vercel-cron');
-  if (secret !== process.env.CRON_SECRET) {
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.log('ヘッダーに関するエラーです');
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
-  console.log('===== CRON START =====');
-  console.log('x-vercel-cron:', request.headers.get('x-vercel-cron'));
-  console.log('authorization:', request.headers.get('authorization'));
-  console.log('user-agent:', request.headers.get('user-agent'));
 
   if (!process.env.GOOGLE_REFRESH_TOKEN) {
     return Response.json(
@@ -39,6 +28,8 @@ export async function GET(request: NextRequest) {
     const data = await fetchGoogleCalendarEvents(accessToken);
     const summary = await summarizeCalendarEvents(data);
     await sendSlackMessage(summary);
+    console.log('実行完了です');
+    console.log('===== CRON END =====');
     return Response.json({ message: 'Cron実行完了' });
   } catch (error) {
     return Response.json(
